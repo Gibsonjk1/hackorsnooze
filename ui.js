@@ -11,11 +11,22 @@ $(async function() {
 	const $createStory = $('#submit-story');
 
 	// submit button to create a new story
-	$createStory.on('submit', function(event) {
+	$createStory.on('submit', async function(event) {
 		event.preventDefault();
+		const title = $('#create-story-title').val();
+		const url = $('#create-story-link');
+		const author = $('#author1').val();
+		const username = currentUser.username;
+
 		let addNew = new StoryList();
-		addNew.addStory();
+		await addNew.addStory(currentUser, {
+			title,
+			author,
+			url,
+			username
+		});
 	});
+
 	// global storyList variable
 	let storyList = null;
 

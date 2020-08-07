@@ -43,19 +43,36 @@ class StoryList {
    * Returns the new story object
    */
 
-	async addStory() {
-		const storyNew = JSON.stringify({
-			token: localStorage.getItem('token'),
-			story: {
-				author: localStorage.getItem('username'),
-				title: $('#create-story-title').val(),
-				url: $('#create-story-link').val()
-			}
+	async addStory(user, newStory) {
+		const response = await axios({
+			method: 'POST',
+			url: `${BASE_URL}/stories`,
+			data: JSON.stringify({
+				token: user.loginToken,
+				story: newStory
+			})
 		});
-		let createStory = await axios.post('https://hack-or-snooze-v3.herokuapp.com/stories', storyNew);
+		// make a Story instance out of the story object we get back
+		newStory = new Story(response.data.story);
+		// add the story to the beginning of the list
+		this.stories.unshift(newStory);
+		// add the story to the beginning of the user's list
+		user.ownStories.unshift(newStory);
 
-		return createStory;
+		return newStory;
 	}
+	// 	const storyNew = JSON.stringify({
+	// 		token: localStorage.getItem('token'),
+	// 		story: {
+	// 			author: localStorage.getItem('username'),
+	// 			title: $('#create-story-title').val(),
+	// 			url: $('#create-story-link').val()
+	// 		}
+	// 	});
+	// 	let createStory = await axios.post('https://hack-or-snooze-v3.herokuapp.com/stories', { storyNew });
+
+	// 	return createStory;
+	// }
 
 	// TODO - Implement this functions!
 	// this function should return the newly created story so it can be used in
